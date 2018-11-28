@@ -50,6 +50,7 @@ LIB_DEP = $(NNVM_PATH)/lib/libnnvm.a
 ALL_DEP = $(OBJ) $(LIB_DEP)
 
 all: lib/libtinyflow.so
+#all: lib/libtinyflow.dylib
 
 build/src/%.o: src/%.cc
 	@mkdir -p $(@D)
@@ -60,6 +61,11 @@ build/src/%_gpu.o: src/%.cu
 	@mkdir -p $(@D)
 	$(NVCC) $(NVCCFLAGS) -Xcompiler "$(CFLAGS)" -M -MT build/src/$*_gpu.o $< >build/src/$*_gpu.d
 	$(NVCC) -c -o $@ $(NVCCFLAGS) -Xcompiler "$(CFLAGS)" $<
+
+#lib/libtinyflow.dylib: $(ALL_DEP)
+#	@mkdir -p $(@D)
+#	$(CXX) $(CFLAGS) -dynamiclib -o $@ $(filter %.o, $^) \
+#	-Wl,${WHOLE_ARCH} $(filter %.a, $^) -Wl,${NO_WHOLE_ARCH} $(LDFLAGS)
 
 lib/libtinyflow.so: $(ALL_DEP)
 	@mkdir -p $(@D)
